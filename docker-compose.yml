@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  elasticsearch_1:
+    image: gabrielpellegrini/elasticsearch:6.2_people_by_state
+    container_name: elasticsearch
+    environment:
+        - node.name=elasticsearch_poc
+        - cluster.name=elasticsearch
+        - discovery.type=single-node
+    ports:
+        - 9200:9200
+        - 9300:9300
+    networks:
+        - elk_stack
+  kibana_1:
+    image: gabrielpellegrini/kibana:6.2_people_by_state
+    container_name: kibana
+    ports:
+      - 5601:5601
+    environment:
+        - SERVER_NAME=kibana
+        - ELASTICSEARCH_URL=http://elasticsearch:9200
+    networks:
+      - elk_stack
+    depends_on:
+        - elasticsearch_1
+networks:
+  elk_stack:
+    driver: bridge
